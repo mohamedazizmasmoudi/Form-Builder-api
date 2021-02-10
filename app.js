@@ -8,7 +8,8 @@ const expressValidator = require('express-validator');
 const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const formModule = require('./controllers/form');
+// const formModule = require('./controllers/form');
+const formModule = require('./formModule');
 
 dotenv.config();
 
@@ -57,8 +58,47 @@ app.use(cors());
 app.use('/api', postRoutes);
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
-app.use('/api', customersRoutes);
-
+// app.use('/api', customersRoutes);
+app.post('/api/customers/getnewDB', (req, res) => {
+    formModule.getFromDB2(req.body.index).then((data) => {
+      res.send(data);
+    });
+  });
+  
+  //gets document from DB by name
+  app.post('/api/customers/getForm', (req, res) => {
+    formModule.getFromDBbyName(req.body.name).then((data) => {
+      res.send(data);
+    });
+  });
+  
+  //add new form to DB - addFormToDB
+  app.post('/api/customers/add', (req, res) => {
+    formModule.addFormToDB(req.body).then(() => {
+      res.send('');
+    });
+  });
+  
+  //update counter in DB after submitting -updatingCounterInDB
+  app.post('/api/customers/update', (req, res) => {
+      formModule.updatingCounterInDB(req.body.name, req.body.counter).then(() =>{
+        res.send('');
+      });
+    });
+  
+  //insert new document to DB2 -  addFormToDB2
+  app.post('/api/customers/newDB', (req, res) => {
+    formModule.addFormToDB2(req.body).then(() =>{
+      res.send('');
+    });
+  });
+  
+  //return All data in DB
+  app.get('/api/customers/get', (req, res) => {
+    formModule.getFromDB().then((data) => {
+      res.send(data);
+    });
+  });
 app.use(function(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({ error: 'Unauthorized!' });

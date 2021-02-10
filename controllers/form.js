@@ -5,12 +5,13 @@ const FullForms = require('../models/fullForms');
 
 exports.getFromDB = (req, res) => {
 
-    Form.find({}).exec((err, data) => {
+    Form.find().exec((err, data) => {
         if (err) {
             console.log(err);
             res.send(err)
 
         }
+        console.log("fdjmfslfksdf",data)
         res.status(200).json(data) 
     });
 
@@ -19,12 +20,15 @@ exports.getFromDB = (req, res) => {
 
   exports.getFromDB2 = (req, res) => {
 
-    FullForms.find({ "index": req.body.index }).toArray((err, data) => {
+
+
+    FullForms.find({ form: req.body.form }).exec((err, data) => {
         if (err) {
             console.log(err);
             res.send(err)
         }
-        res.send(data)
+		 res.status(200).json(data) 
+
     });
 
     
@@ -46,8 +50,13 @@ exports.addFormToDB = (req, res) => {
     const form =  new Form();
     form.name=req.body.name
     form.counter=req.body.counter
-    console.log(req.body.fields[0])
-    form.fields[0]=req.body.fields[0]
+    console.log(req.body.fields.length())
+    for(i=0;i<req.body.fields.length();i++){
+        console.log("jefk")
+    form.fields[i]=req.body.fields[i]
+    console.log(form)
+
+}
     console.log(form)
      form.save();
   
@@ -55,19 +64,28 @@ exports.addFormToDB = (req, res) => {
 }
 exports.updatingCounterInDB = (req, res) => {
 
-    const myquery = { name: req.body.name };
-    const newvalues = { $set: { name: req.body.name , counter: counter } };
-    Form.updateOne(myquery, newvalues, function (err, result) {
+ Form.find({form: req.body.form   }).exec((err, data) => {
+        if (err) {
+            console.log(err);
+            res.send(err)
+        }
+		data.counter=req.body.counter
+		data.save()
+        res.status(200) 
     });
-    res.send()
+
 
     
 }
 exports.addFormToDB2 = (req, res) => {
+ const fullform =new FullForms();
  
-    FullForms.insertOne(req.body), function (err, result) {
-    }
-    
-res.send()
+  fullform.user=req.params.user
+    fullform.form=req.params.form
+    fullform.formSubmissions[0]=req.body.formSubmissions[0]
+    console.log(fullform)
+     fullform.save();
+  
+      res.status(200).json() 
     
 }

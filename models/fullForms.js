@@ -13,7 +13,14 @@ const fullFormsSchema = new mongoose.Schema({
             value: String
         }
     ],
-    
+    form: {
+        type: ObjectId,
+        ref: 'Form'
+    },
+	user: {
+        type: ObjectId,
+        ref: 'User'
+    },
     created: {
         type: Date,
         default: Date.now

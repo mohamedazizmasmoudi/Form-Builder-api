@@ -103,7 +103,7 @@ Post.find({_id:req.params.pageid})
 .then(post => {
 Form.find({_id:req.params.form}).exec(
     (err, result) => {
-
+console.log(result)
 post[0].form=result[0]
 
 post[0].save()

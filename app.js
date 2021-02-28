@@ -19,7 +19,7 @@ dotenv.config();
 // mongodb+srv://kaloraat_admin:kkkkkk9@nodeapi-pbn7j.mongodb.net/nodeapi?retryWrites=truenodeAPI?retryWrites=true
 // mongodb+srv://robertchou_admin:Aeiourc2491@nodeapi-p2o93.mongodb.net/nodeapi?retryWrites=true&w=majority
 mongoose
-    .connect(      'mongodb+srv://atlas:atlas@atlas.dt1o2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+    .connect( 'mongodb+srv://atlas:atlas@cluster0.ztt1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
      {
         useNewUrlParser: true
     })

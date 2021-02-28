@@ -30,7 +30,7 @@ mongoose.connection.on('error', err => {
 });
 
 const corsOptions = {
-  origin: "https://war9a.netlify.app" || "https://war9a-tunisie.netlify.app",
+  origin: "https://war9a.netlify.app" && "https://war9a-tunisie.netlify.app",
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
 };

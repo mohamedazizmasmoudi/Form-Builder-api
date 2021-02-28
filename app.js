@@ -31,11 +31,19 @@ mongoose.connection.on("error", (err) => {
   console.log(`DB connection error: ${err.message}`);
 });
 
-const corsOptions = {
-  origin: "https://war9a.netlify.app" || "https://war9a-tunisie.netlify.app",
+var whitelist = ['https://war9a.netlify.app', 'https://war9a-tunisie.netlify.app']
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
-};
+
+}
 
 const postRoutes = require("./routes/post");
 const authRoutes = require("./routes/auth");

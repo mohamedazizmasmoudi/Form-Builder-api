@@ -29,28 +29,12 @@ mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`);
 });
 
-var origin = '';
-  
-app.use(function (req, res, next) {
-
-  var allowedDomains = ['http://localhost:3000','http://localhost:3001' ];
-  var test = req.headers.origin;
-  origin = test;
-  if(allowedDomains.indexOf(origin) > -1){
-    res.setHeader('Access-Control-Allow-Origin', test);
-  }
-
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  next();
-})
 const corsOptions = {
-  origin,
+  origin: "https://war9a.netlify.app" || "https://war9a-tunisie.netlify.app",
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
 };
+  
 const postRoutes = require('./routes/post');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');

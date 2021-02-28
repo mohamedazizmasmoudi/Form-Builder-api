@@ -1,7 +1,7 @@
 const mongo = require('mongodb');
 const assert = require('assert');
 
-const mongoUrl ='mongodb+srv://atlas:atlas@atlas.dt1o2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const mongoUrl ='mongodb+srv://atlas:atlas@cluster0.ztt1k.mongodb.net/form_builder?retryWrites=true&w=majority';
 const MongoClient = mongo.MongoClient;
 
 module.exports = {
@@ -54,6 +54,7 @@ module.exports = {
                 if (err) {
                     console.log(err);
                 }
+                console.log("name",name)
                 const db = client.db("form_builder");
                 const collection = db.collection('forms');
                 collection.find({ "name": name }).toArray((err, data) => {

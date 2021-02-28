@@ -29,7 +29,11 @@ mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`);
 });
 
-
+const corsOptions = {
+  origin: process.env.CLIENT_URL || "https://war9a.netlify.app" || "https://war9a-tunisie.netlify.app",
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
   
 const postRoutes = require('./routes/post');
 const authRoutes = require('./routes/auth');
@@ -55,7 +59,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser());
 app.use(expressValidator());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use('/api', postRoutes);
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);

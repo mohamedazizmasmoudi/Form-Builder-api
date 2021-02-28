@@ -1,8 +1,7 @@
 const mongo = require('mongodb');
 const assert = require('assert');
 
-const mongoUrl =       'mongodb+srv://atlas:atlas@atlas.dt1o2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-;
+const mongoUrl ='mongodb+srv://atlas:atlas@atlas.dt1o2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 const MongoClient = mongo.MongoClient;
 
 module.exports = {

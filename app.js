@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const mongoose = require("mongoose");
-const morgan = require("morgan");
-const bodyParser = require("body-parser");
-var cookieParser = require("cookie-parser");
-const expressValidator = require("express-validator");
-const fs = require("fs");
-const cors = require("cors");
-const dotenv = require("dotenv");
+const mongoose = require('mongoose');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+const expressValidator = require('express-validator');
+const fs = require('fs');
+const cors = require('cors');
+const dotenv = require('dotenv');
 // const formModule = require('./controllers/form');
-const formModule = require("./formModule");
+const formModule = require('./formModule');
 
 dotenv.config();
 
@@ -19,118 +19,110 @@ dotenv.config();
 // mongodb+srv://kaloraat_admin:kkkkkk9@nodeapi-pbn7j.mongodb.net/nodeapi?retryWrites=truenodeAPI?retryWrites=true
 // mongodb+srv://robertchou_admin:Aeiourc2491@nodeapi-p2o93.mongodb.net/nodeapi?retryWrites=true&w=majority
 mongoose
-  .connect(
-    "mongodb+srv://atlas:atlas@cluster0.ztt1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-    }
-  )
-  .then(() => console.log("DB Connected"));
+    .connect( 'mongodb+srv://atlas:atlas@cluster0.ztt1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+     {
+        useNewUrlParser: true
+    })
+    .then(() => console.log('DB Connected'));
 
-mongoose.connection.on("error", (err) => {
-  console.log(`DB connection error: ${err.message}`);
+mongoose.connection.on('error', err => {
+    console.log(`DB connection error: ${err.message}`);
 });
 
-var whitelist = ['https://war9a.netlify.app', 'https://war9a-tunisie.netlify.app']
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
+const corsOptions = {
+  origin: "https://war9a.netlify.app" || "https://war9a-tunisie.netlify.app",
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
-
-}
-
-const postRoutes = require("./routes/post");
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/user");
-const customersRoutes = require("./routes/customers");
+};
+  
+const postRoutes = require('./routes/post');
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
+const customersRoutes = require('./routes/customers');
 
 // apiDocs
-app.get("/api", (req, res) => {
-  fs.readFile("docs/apiDocs.json", (err, data) => {
-    if (err) {
-      res.status(400).json({
-        error: err,
-      });
-    }
-    const docs = JSON.parse(data);
-    res.json(docs);
-  });
+app.get('/api', (req, res) => {
+    fs.readFile('docs/apiDocs.json', (err, data) => {
+        if (err) {
+            res.status(400).json({
+                error: err
+            });
+        }
+        const docs = JSON.parse(data);
+        res.json(docs);
+    });
 });
 
 // middleware -
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser());
 app.use(expressValidator());
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+  const allowedOrigins = ['https://war9a.netlify.app', 'https://war9a-tunisie.netlify.app'];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+       res.setHeader('Access-Control-Allow-Origin', origin);
   }
-  next();
+  //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', true);
+  return next();
 });
-app.use("/api", postRoutes);
-app.use("/api", authRoutes);
-app.use("/api", userRoutes);
+app.use('/api', postRoutes);
+app.use('/api', authRoutes);
+app.use('/api', userRoutes);
 // app.use('/api', customersRoutes);
-app.post("/api/customers/getnewDB", (req, res) => {
-  formModule.getFromDB2(req.body.index).then((data) => {
-    res.send(data);
+app.post('/api/customers/getnewDB', (req, res) => {
+    formModule.getFromDB2(req.body.index).then((data) => {
+      res.send(data);
+    });
   });
-});
-
-//gets document from DB by name
-app.post("/api/customers/getForm", (req, res) => {
-  formModule.getFromDBbyName(req.body.name).then((data) => {
-    res.send(data);
+  
+  //gets document from DB by name
+  app.post('/api/customers/getForm', (req, res) => {
+    formModule.getFromDBbyName(req.body.name).then((data) => {
+      res.send(data);
+    });
   });
-});
-
-//add new form to DB - addFormToDB
-app.post("/api/customers/add", (req, res) => {
-  formModule.addFormToDB(req.body).then(() => {
-    res.send("");
+  
+  //add new form to DB - addFormToDB
+  app.post('/api/customers/add', (req, res) => {
+    formModule.addFormToDB(req.body).then(() => {
+      res.send('');
+    });
   });
-});
-
-//update counter in DB after submitting -updatingCounterInDB
-app.post("/api/customers/update", (req, res) => {
-  formModule.updatingCounterInDB(req.body.name, req.body.counter).then(() => {
-    res.send("");
+  
+  //update counter in DB after submitting -updatingCounterInDB
+  app.post('/api/customers/update', (req, res) => {
+      formModule.updatingCounterInDB(req.body.name, req.body.counter).then(() =>{
+        res.send('');
+      });
+    });
+  
+  //insert new document to DB2 -  addFormToDB2
+  app.post('/api/customers/newDB', (req, res) => {
+    formModule.addFormToDB2(req.body).then(() =>{
+      res.send('');
+    });
   });
-});
-
-//insert new document to DB2 -  addFormToDB2
-app.post("/api/customers/newDB", (req, res) => {
-  formModule.addFormToDB2(req.body).then(() => {
-    res.send("");
+  
+  //return All data in DB
+  app.get('/api/customers/get', (req, res) => {
+    formModule.getFromDB().then((data) => {
+      res.send(data);
+    });
   });
-});
-
-//return All data in DB
-app.get("/api/customers/get", (req, res) => {
-  formModule.getFromDB().then((data) => {
-    res.send(data);
-  });
-});
-app.use(function (err, req, res, next) {
-  if (err.name === "UnauthorizedError") {
-    res.status(401).json({ error: "Unauthorized!" });
-  }
+app.use(function(err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({ error: 'Unauthorized!' });
+    }
 });
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-  console.log(`A Node Js API is listening on port: ${port}`);
+    console.log(`A Node Js API is listening on port: ${port}`);
 });
